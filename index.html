@@ -45,7 +45,6 @@
 
     .grid img {
         width: 100%;
-        height: auto;
         border-radius: 10px;
         cursor: pointer;
         opacity: 0;
@@ -106,20 +105,23 @@
 </div>
 
 <script>
-const username = "lucky";   // <-- change
-const repo = "Portfolio";           // <-- change
-const path = "";                   // leave "" if images are in root
+const username = "lucky";
+const repo = "Portfolio";
+const path = "";
 
 const grid = document.getElementById("grid");
 const viewer = document.getElementById("viewer");
 const viewerImg = document.getElementById("viewerImg");
 
-// fetch repo contents
+// fetch files from GitHub
 fetch(`https://api.github.com/repos/${username}/${repo}/contents/${path}`)
     .then(res => res.json())
     .then(files => {
+        console.log(files); // debug
+
         files.forEach(file => {
-            if (file.name.match(/\.(jpg|jpeg|png)$/i))
+            if (file.name.match(/\.(jpg|jpeg|png)$/i)) {
+
                 const img = document.createElement("img");
                 img.src = file.download_url;
 
@@ -135,9 +137,10 @@ fetch(`https://api.github.com/repos/${username}/${repo}/contents/${path}`)
                 grid.appendChild(img);
             }
         });
-    });
+    })
+    .catch(err => console.error("Error loading images:", err));
 
-// close viewer
+// close fullscreen
 viewer.onclick = () => {
     viewer.classList.remove("active");
 };
